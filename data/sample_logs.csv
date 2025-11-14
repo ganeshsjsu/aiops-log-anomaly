@@ -1,0 +1,16 @@
+timestamp,level,service,host,trace_id,message,label
+2024-05-01T12:00:00Z,INFO,auth-service,auth-1,2a4fd,"User login succeeded",0
+2024-05-01T12:00:02Z,INFO,orders-service,orders-1,2a4fe,"Created order #1201",0
+2024-05-01T12:00:05Z,ERROR,payment-service,payment-1,2a4ff,"Payment provider timeout",1
+2024-05-01T12:00:08Z,INFO,shipping-service,ship-1,2a500,"Queued shipping request",0
+2024-05-01T12:00:10Z,WARN,auth-service,auth-2,2a501,"Latency above 500ms",0
+2024-05-01T12:00:12Z,ERROR,orders-service,orders-2,2a502,"Inventory lock failed",1
+2024-05-01T12:00:15Z,INFO,payment-service,payment-2,2a503,"Payment completed",0
+2024-05-01T12:00:18Z,INFO,shipping-service,ship-2,2a504,"Shipment label generated",0
+2024-05-01T12:00:20Z,ERROR,auth-service,auth-1,2a505,"JWT signature invalid",1
+2024-05-01T12:00:22Z,INFO,orders-service,orders-1,2a506,"Updated order state",0
+2024-05-01T12:00:25Z,INFO,payment-service,payment-1,2a507,"Payment retry scheduled",0
+2024-05-01T12:00:30Z,ERROR,shipping-service,ship-2,2a508,"Carrier API HTTP 503",1
+2024-05-01T12:00:32Z,WARN,auth-service,auth-2,2a509,"Slow DB query",0
+2024-05-01T12:00:35Z,INFO,orders-service,orders-3,2a510,"Order delivered",0
+2024-05-01T12:00:38Z,ERROR,orders-service,orders-2,2a511,"Payment mismatch flagged",1

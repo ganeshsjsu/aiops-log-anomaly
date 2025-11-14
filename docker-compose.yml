@@ -1,0 +1,60 @@
+version: "3.9"
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.4
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.4
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  trainer:
+    build: .
+    image: aiops/anomaly-detector:latest
+    command: ["python", "app/train_model.py"]
+    volumes:
+      - ./models:/opt/aiops/models
+      - ./data:/opt/aiops/data
+    environment:
+      MODEL_PATH: /opt/aiops/models/isolation_forest.joblib
+      VECTORIZER_PATH: /opt/aiops/models/vectorizer.joblib
+
+  log-producer:
+    image: aiops/anomaly-detector:latest
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      LOG_TOPIC: application-logs
+    command: ["python", "app/log_producer.py"]
+
+  spark-app:
+    image: aiops/anomaly-detector:latest
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      LOG_TOPIC: application-logs
+      MODEL_PATH: /opt/aiops/models/isolation_forest.joblib
+      VECTORIZER_PATH: /opt/aiops/models/vectorizer.joblib
+      SPARK_CHECKPOINT_DIR: /opt/aiops/checkpoint
+    volumes:
+      - ./models:/opt/aiops/models
+      - ./checkpoint:/opt/aiops/checkpoint
+    command: ["python", "app/spark_app.py"]

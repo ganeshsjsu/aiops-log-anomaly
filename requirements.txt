@@ -1,0 +1,6 @@
+faker==19.13.0
+joblib==1.4.2
+kafka-python==2.0.2
+pandas==2.2.2
+pyspark==3.5.0
+scikit-learn==1.4.2
